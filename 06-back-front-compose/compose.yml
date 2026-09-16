@@ -1,0 +1,75 @@
+services:
+  # docker run --network untdf-app \
+  #  -e POSTGRES_USER=untdf \
+  #  -e POSTGRES_PASSWORD=untdf \
+  #  -e POSTGRES_DB=ciudades \
+  #  -v untdf-pgdata:/var/lib/postgresql/data \
+  #  -p 5432:5432 \
+  #  postgres:17
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    ports:
+      - 5432:5432
+    volumes:
+      - untdf-pgdata:/var/lib/postgresql/data
+    networks:
+      - untdf-app
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # docker build -t untdf-api-dev ./backend
+  # ++++++++
+  # docker run --network untdf-app \
+  #  -v "${PWD}:/app" \
+  #  --env-file .env \
+  #  -p 8000:8000 \
+  #  untdf-api-dev
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/app
+    networks:
+      - untdf-app
+    
+  # docker build -t untdf-front-dev .
+  # +++++++++++++++
+  #docker run --network untdf-app \
+  #  -p 5173:5173 \
+  #  -v "${PWD}:/app" \
+  #  untdf-front-dev
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_HOST: "${API_HOST}"
+    depends_on:
+      - api
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/app
+    networks:
+      - untdf-app
+
+volumes:
+  untdf-pgdata:
+
+networks:
+  untdf-app:
