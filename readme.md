@@ -19,6 +19,7 @@ Cada carpeta es un ejercicio independiente con su propio `readme.md` y comandos.
 | [04-network](04-network) | Red Docker manual | Levantar Django + PostgreSQL sin Compose, conectados por una red Docker. |
 | [05-back-front-manual](05-back-front-manual) | Backend + frontend + DB a mano | Tres contenedores (Postgres, Django, Vite) levantados manualmente con `docker network`, `docker build` y `docker run`. |
 | [06-back-front-compose](06-back-front-compose) | Docker Compose | Levantar todo el stack back + front + DB con un solo `docker compose up`. |
+| [07-django-prod](07-django-prod) | Django en producción | Dockerfile de producción: código copiado en la imagen + **Gunicorn** (sin `runserver` ni volumen). |
 
 ## Recomendación de orden
 
@@ -30,6 +31,7 @@ Los ejercicios están pensados para hacerse en orden, porque cada uno introduce 
 4. **04-network**: agregar comunicación entre contenedores usando redes Docker.
 5. **05-back-front-manual**: escalar a tres contenedores interconectados sin Compose.
 6. **06-back-front-compose**: automatizar todo con Docker Compose.
+7. **07-django-prod**: el paralelo de producción en el backend (Gunicorn + código en la imagen), como el `prod.Dockerfile` de Vite.
 
 ## Convenciones usadas en los ejercicios
 
